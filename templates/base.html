@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#222"/>
+  <meta name="description" content="{% block desc %}Stachums - a place to talk about technology, its subsets and related fields.{% endblock %}">
+  <meta name="viewport" content="width=device-width">
+  <title>{% block title %}{{ settings['website']['name'] }}{% endblock %}</title>
+  <link href="{{ url_for('static', filename='style.css') }}" rel="preconnect stylesheet" type="text/css" />
+  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+</head>
+
+<body>
+<div id="header">
+  <div class="navbar pagesize noselect"><a class="nostyle" href="{{ url_for('index') }}"><img class="stache" src="{{ url_for('static', filename='imgs/stache.png') }}" alt="" aria-hidden='true'><span id="namebar">{{ settings['website']['name'] }}</span></a></div>
+  <nav class="pagesize">
+    <ul class="btncontainer clearfix">
+      <a class="{{'active' if active_page == 'home' }}" href="/">Home</a>
+      <a class="{{'active' if active_page == 'forum' }}" href="{{ url_for('mserve') }}">Forum</a>
+      {% if current_user.is_authenticated %}
+      <a class="{{'active' if active_page == 'profile' }}" href="{{ url_for('profile', username=current_user.username) }}">Profile</a>
+      <a class="rightfloat" href="{{ url_for('logout') }}">Logout</a>
+      <div class="notifications rightfloat">
+        {% set notis = current_user.getNewNotifications() %}
+        <a class="nopadd" href="{{ url_for('notifications') }}"><summary data-nots='{{ notis|length }}' {% if (notis|length) > 0 %}class='enabled'{% endif %}>N</summary></a>
+      </div>{% else %}
+      <a class="{{'active' if active_page == 'login' }}" href="{{ url_for('login') }}">Login</a>
+      {% endif %}
+      
+    </ul>
+  </nav>
+</div>
+  
+<div class="content pagesize">
+
+<main>{% block main %}{% endblock %}</main>
+
+</div>
+  
+<footer class="bottom">
+    <div class="pagesize">
+        <div class="socials">
+        <ul class="clearfix">
+            <a class="left" href="{{ settings['base']['source link'] }}">Repl</a>
+            {% if current_user.is_authenticated %}
+            <a class="left" href="{{ url_for('profile', username=current_user.username) }}">Profile</a>
+            {% else %}
+            <a href="{{ url_for('profile', username='ENIAC') }}" class="left">Profile</a>
+            {% endif %}
+            <a href="{{url_for('topic', murl='feedback' )}}" class="right">Feedback</a>
+        </ul>
+        </div>
+
+        <div class="legal"><a href="{{ url_for('legal') }}">Privacy</a> {% if current_user.is_authenticated %}<a href="{{ url_for('settings') }}">Logged in as: {{ current_user.username }}</a>{% endif %}</div>
+    </div>
+</footer>
+</body>
+</html>

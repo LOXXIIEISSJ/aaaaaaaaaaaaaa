@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% set active_page = 'login' %}
+{% block title %}Login - Stachums{% endblock %}
+
+{% block main %}
+
+  <ul class="bread">
+    <li><a href="#">Home</a></li>
+    <li><a href="#" class="bold">Forums</a></li>
+  </ul>
+
+  <div class="title"><h1>Login / Register</h1></div>
+
+  <div class="group">
+    <div class="node">
+      <h4 class="nodeTitle">Login</h4>
+    </div>
+    <form action="#" method="post" class="login">
+        {{ login_form.csrf_token }}
+        <dl class="formField clearfix">
+        <dt><label for="username">User:</label></dt>
+        <dd>{{ login_form.username() }}</dd>
+        </dl>
+        
+        <dl class="formField clearfix">
+        <dt><label for="password">Password:</label></dt>
+        <dd>{{ login_form.password() }}</dd>
+        </dl>
+
+        <dl class="formField clearfix">
+            <dt></dt>
+            <dd>{{ login_form.submitLogin() }}</dd>
+        </dl>
+    </form>
+  </div>
+
+  <div class="group">
+    <div class="node">
+      <h4 class="nodeTitle">Register</h4>
+    </div>
+    <form action="#" method="post" class="login">
+        {{ register_form.csrf_token }}
+        <dl class="formField clearfix">
+        <dt><label for="username">User:</label></dt>
+        <dd>{{ register_form.username() }}</dd>
+        </dl>
+
+        <dl class="formField clearfix">
+        <dt><label for="email">Email:</label></dt>
+        <dd>{{ register_form.email() }}</dd>
+        </dl>
+        
+        <dl class="formField clearfix">
+        <dt><label for="password">Password:</label></dt>
+        <dd>{{ register_form.password() }}</dd>
+        </dl>
+        <dl class="formField clearfix">
+            <dt></dt>
+            <dd>{{ register_form.submitReg() }}</dd>
+        </dl>
+    </form>
+  </div>
+
+  <ul class="bread">
+    <li><a href="#">Home</a></li>
+    <li><a href="#" class="bold">Forums</a></li>
+  </ul>
+</div>
+
+{% if error %}<div id="snack">{{ error }}</div>{% endif %}
+
+{% endblock %}

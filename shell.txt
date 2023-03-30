@@ -1,0 +1,6 @@
+export FLASK_APP="main.py"
+flask db migrate -m "Change details."
+// flask db init
+// flask db stamp head (if db not up to date)
+// flask db upgrade
+// pip install flask-sitemapper

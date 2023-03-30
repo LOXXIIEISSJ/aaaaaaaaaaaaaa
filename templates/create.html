@@ -1,0 +1,47 @@
+{% extends 'base.html' %}  
+{% set active_page = 'forum' %}
+{% block title %}Create Thread - Stachums{% endblock %}
+{% block main %}
+  
+  <ul class="bread">
+    <li><a href="#">Home</a></li>
+    <li><a href="#" class="bold">Forums</a></li>
+  </ul>
+
+  <div class="title"><h1>Thread Creation</h1></div>
+
+  <div class="group">
+    <div class="node">
+      <h4 class="nodeTitle">Post Details</h4>
+    </div>
+    <form action="#" method="post" class="login">
+        {{ form.csrf_token }}
+        <dl class="formField clearfix">
+        <dt><label for="title">Title:</label></dt>
+        <dd class="thread">{{ form.title(placeholder="Title") }}</dd>
+        </dl>
+        
+        <dl class="formField clearfix">
+        <dt class="descLabel"><label for="post">Post:</label></dt>
+        <dd class="thread">{{ form.content(maxlength=5000, rows=4, placeholder="Contents of thread go here.", spellcheck="true") }}</dd>
+        </dl>
+
+        <dl class="formField clearfix">
+          <dt>{{ form.tags.label }}</label></dt>
+          <dd class="thread">{{ form.tags() }}</dd>
+        </dl>
+
+        <dl class="formField clearfix">
+            <dt></dt>
+            <dd class="thread">{{ form.submitCreate() }}</dd>
+        </dl>
+    </form>
+  </div>
+
+  <ul class="bread">
+    <li><a href="#">Home</a></li>
+    <li><a href="#" class="bold">Forums</a></li>
+  </ul>
+</div>
+
+{% endblock %}

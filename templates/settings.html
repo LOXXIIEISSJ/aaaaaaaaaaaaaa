@@ -1,0 +1,65 @@
+{% extends 'base.html' %}  
+{% block title %}Settings - Stachums{% endblock %}
+
+{% block main %}
+  
+  <ul class="bread">
+    <li><a href="#">Home</a></li>
+    <li><a href="#" class="bold">Settings</a></li>
+  </ul>
+
+  <div class="title"><h1>User Settings</h1></div>
+
+  <div class="group">
+    <div class="node">
+      <h4 class="nodeTitle">Settings</h4>
+    </div>
+    <form action="#" method="post" class="login" enctype="multipart/form-data" autocomplete="off">
+        {{ settings_form.csrf_token }}
+        <dl class="formField clearfix">
+        <dt><label for="improfile_picg" title="Profile Picture">Profile:</label></dt>
+        <dd>{{ settings_form.profile_pic() }}<label for="profile_pic" class="upload">Upload</label></dd>
+        </dl>
+
+        <dl class="formField clearfix">
+        <dt class="descLabel"><label for="description" title="Description">Desc:</label></dt>
+        <dd>{{ settings_form.description(maxlength="500", rows="4", placeholder='"Having a blast."&#10;"Doing something."', spellcheck="true") }}</dd>
+        </dl>
+        
+        <dl class="formField clearfix">
+        <dt><label for="password">Password:</label></dt>
+        <dd>{{ settings_form.password() }}</dd>
+        </dl>
+
+        <dl class="formField clearfix">
+            <dt></dt>
+            <dd>{{ settings_form.submitSettings() }}</dd>
+        </dl>
+
+
+        <dl class="formField clearfix">
+          <dt><label for="delete" title="Delete this account">Delete:</label></dt>
+          <dd>{{ settings_form.delete(placeholder="account username backwards") }}</dd>
+        </dl>
+
+        <dl class="formField clearfix">
+          <dt><label for="newPassword" title="New password">New PWD:</label></dt>
+          <dd>{{ settings_form.newPassword(placeholder="new password") }}
+          </dd>
+        </dl>
+
+        {% if not current_user.confirmed %}
+        <dl class="formField clearfix">
+          <dt><label for="delete" title="Resend the confirmation email">Resend:</label></dt>
+          <dd>{{ settings_form.resendConf() }}</dd>
+        </dl>
+        {% endif %}
+    </form>
+  </div>
+  <ul class="bread">
+    <li><a href="#">Home</a></li>
+    <li><a href="#" class="bold">Settings</a></li>
+  </ul>
+</div>
+
+{% endblock %}

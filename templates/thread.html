@@ -1,0 +1,159 @@
+{% extends 'base.html' %}  
+
+{% set active_page = 'forum' %}
+{% block desc %}{{ post.title|safe|truncate(30) }} : {{ post.content|truncate(300) }}{% endblock %}
+{% block title %}{{ post.title|safe }} - Stachums{% endblock %}
+{% block main %}
+
+  <ul class="bread">
+    <li><a href="{{ url_for('mserve') }}">Home</a></li>
+    <li><a href="{{ url_for('topic', murl=post.sub.m_url) }}">{{ post.sub.name }}</a></li>
+    <li><a href="{{ url_for('thread', id=post.uuid) }}" class="bold">Discourse</a></li>
+  </ul>
+
+  <div class="title"><h1><div class="badge">{{ post.tag.name }}</div>{{ post.title|safe }}</h1></div>
+
+  {% if not post.anon %}
+  <div class="postData clearfix">
+    <div class="userInfo">
+    <div class="sep"><img class="profilePicture" src="{{ url_for('static', filename='imgs/user/'+post.author.profile_pic) }}" alt="Profile Picture"></div>
+    <div class="sep"><p class="name"><a class="red nostyle" href="{{ url_for('profile', username=post.author.username) }}">@{{ post.author.username }}</a></p><p class="rank">Rank: <span class="{{ post.author.roledata.color }}">[{{ post.author.roledata.role_name }}]</span></p></div>
+    <div class="sep date"><time>Joined {{ post.author.registered_on.strftime('%Y-%m-%d') }}</time></div>
+    <div class="sep"><p class="description">{{ post.author.description }}</p></div>
+    <div class="sep"><p class="description">{{ post.author.posts|length + post.author.comments|length }} posts</p><p class="description">{{ post.author.followers.all()|length }} followers</p><p class="description">{{ daysBetween(post.author.last_active) }}</p></div>
+    {% if post.edited_time %}<div class="sep"><p class="description">Edited <time>{{ post.edited_time.strftime('%Y-%m-%d') }}</time></p></div>{% endif %}
+    </div>
+    
+    <input id="_edit" type="checkbox">
+    <div class="message uutoggle"><article>{% filter markdown %}{{ post.content|safe }}{% endfilter %}</article>
+    <time class="ptime">{{ post.created_on.strftime('%Y-%m-%d @ %H:%M') }}</time>
+      
+      <!-- VS -->{% if current_user.is_authenticated %} <form class="hidden" method="post">{{ vote_form.csrf_token }}{{ vote_form.like() }}{{ vote_form.dislike() }}</form> <div class="vote"> <span>{% if current_user.likedPost(post)==True %}{{ vote_form.like.label(text="▲") }}{% else %}{{ vote_form.like.label(text="△") }}{% endif %}{{ post.getLikes() }}</span> <span>{% if current_user.likedPost(post)==False %}{{ vote_form.dislike.label(text="▼") }}{% else %}{{ vote_form.dislike.label(text="▽") }}{% endif %}{{ post.getDislikes() }}</span> {% else %}<div class="vote"><span>△{{ post.getLikes() }}</span><span>▽{{ post.getDislikes() }}</span>{% endif %}</div><!-- VE -->
+
+      
+      {% if post.author == current_user %}
+      <form action="#" method="post">
+        {{ modify_form.csrf_token }}
+        {{ modify_form.deletePost.label(class='postedit') }}{{ modify_form.deletePost(class='hidden') }}
+        <label class="collapse postedit" for="_edit">edit</label>
+      </form>
+      {% endif %}
+      {% if current_user.is_authenticated and post.author != current_user%}
+      <form action="#" method="post">
+        {{ follow_form.csrf_token }}
+        <input type="hidden" value="{{ post.author.id }}" name="follow_uid">
+        {{ follow_form.submit.label(class='postedit', text=('unfollow' if current_user.isfollowing(post.author) else 'follow') ) }}{{ follow_form.submit(class='hidden') }}
+      </form>
+      {% endif %}
+    </div>
+    {% if post.author == current_user %}
+    <div class="message utoggle">
+        <form action="#" method="post">
+        {{ edit_form.csrf_token }}
+        {{ edit_form.newTitle() }}
+        {{ edit_form.newContent() }}
+        {{ edit_form.submitEdit() }}
+      </form>
+
+      <form action="#" method="post">
+        {{ modify_form.csrf_token }}
+        {{ modify_form.deletePost.label(class='postedit') }}{{ modify_form.deletePost(class='hidden') }}
+        <label class="collapse postedit" for="_edit">edit</label>
+      </form>
+    </div>
+    {% endif %}
+  </div>
+  {% else %}
+  <div class="postData clearfix">
+      <div class="userInfo">
+      <div class="sep"><img class="profilePicture" src="{{ url_for('static', filename='imgs/user/default.png') }}" alt="Profile Picture"></div>
+      <div class="sep"><p class="red name">@redacted</p><p class="rank">[redacted]</p></div>
+      <div class="sep date"><time>Joined [redacted]</time></div>
+      <div class="sep"><p class="description">redacted</p></div>
+      <div class="sep"><p class="description">[redacted] posts</p></div>
+      </div>
+      <div class="message"><article><del>{% filter markdown %}{{ post.content|safe }}{% endfilter %}</del></article>
+      <time class="ptime">redacted</time>
+      
+      <!-- VS -->{% if current_user.is_authenticated %} <form class="hidden" method="post">{{ vote_form.csrf_token }}{{ vote_form.like() }}{{ vote_form.dislike() }}</form> <div class="vote"> <span>{% if current_user.likedPost(post)==True %}{{ vote_form.like.label(text="▲") }}{% else %}{{ vote_form.like.label(text="△") }}{% endif %}{{ post.getLikes() }}</span> <span>{% if current_user.likedPost(post)==False %}{{ vote_form.dislike.label(text="▼") }}{% else %}{{ vote_form.dislike.label(text="▽") }}{% endif %}{{ post.getDislikes() }}</span> {% else %}<div class="vote"><span>△{{ post.getLikes() }}</span><span>▽{{ post.getDislikes() }}</span>{% endif %}</div><!-- VE -->
+        
+      </div>
+    </div>
+  {% endif %}
+
+  {% for reply in replies %}
+  <div id="reply_{{ 
+reply.id }}" class="postData clearfix">
+    <div class="userInfo">
+      <div class="sep"><img class="profilePicture" src="{{ url_for('static', filename='imgs/user/'+reply.author.profile_pic) }}" loading="lazy" alt="Profile Picture"></div>
+    <div class="sep"><p class="name"><a class="red nostyle" href="{{ url_for('profile', username=reply.author.username) }}">@{{ reply.author.username }}</a></p><p class="rank">Rank: <span class="{{ reply.author.roledata.color }}">[{{ reply.author.roledata.role_name }}]</span></p></div>
+    <div class="sep date">Joined <time>{{ reply.author.registered_on.strftime('%Y-%m-%d') }}</time></div>
+    <div class="sep"><p class="description">{{ reply.author.description }}</p></div>
+    <div class="sep"><p class="description">{{ reply.author.posts|length + reply.author.comments|length }} posts</p><p class="description">{{ reply.author.followers.all()|length }} followers</p><p class="description">{{ daysBetween(reply.author.last_active) }}</p></div>
+    </div>
+    <div class="message">
+      <article>{% filter markdown %}{{ reply.content|safe }}{% endfilter %}</article>
+      <time class="ptime">{{ reply.created_on.strftime('%Y-%m-%d @ %H:%M') }} <a class="selector" href="#reply_{{ reply.id }}">§</a></time>
+      <!-- VS -->{% if current_user.is_authenticated %} <form class="hidden" method="post">{{ vote_form.csrf_token }}{{ vote_form.likeComment() }}{{ vote_form.dislikeComment() }}<input type="hidden" value='{{ reply.id }}' name="comment_id"></form> <div class="vote"> <span>{% if current_user.likedComment(reply)==True %}{{ vote_form.likeComment.label(text="▲") }}{% else %}{{ vote_form.likeComment.label(text="△") }}{% endif %}{{ reply.getLikes() }}</span> <span>{% if current_user.likedComment(reply)==False %}{{ vote_form.dislikeComment.label(text="▼") }}{% else %}{{ vote_form.dislikeComment.label(text="▽") }}{% endif %}{{ reply.getDislikes() }}</span> {% else %}<div class="vote"><span>△{{ reply.getLikes() }}</span><span>▽{{ reply.getDislikes() }}</span>{% endif %}</div><!-- VE -->
+      {% if current_user.is_authenticated and reply.author != current_user %}
+      <form action="#" method="post">
+        {{ follow_form.csrf_token }}
+        <input type="hidden" value="{{ reply.author.id }}" name="follow_uid">
+        <label for="follow_{{ reply.author.id }}" class="postedit">{{ 'unfollow' if current_user.isfollowing(reply.author) else 'follow' }}</label>
+        <input class='hidden' type="submit" id='follow_{{ reply.author.id }}'>
+      </form>
+      {% if current_user == reply.author %}
+      <form action="#" method="post">
+        {{ dcf.csrf_token }}
+        <input type="hidden" value="{{ reply.id }}" name="deleteID">
+        {{ dcf.deleteComment.label(class='postedit') }}
+        {{ dcf.deleteComment(class='hidden') }}
+      </form>
+      {% endif %}
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+
+  {% if current_user.is_authenticated %}
+  <div class="postData clearfix">
+  <div class="userInfo">
+    <div class="sep"><img class="profilePicture" src="{{ url_for('static', filename='imgs/user/'+current_user.profile_pic) }}" alt="Profile Picture"></div>
+  <div class="sep"><p class="red name">@{{ current_user.username }}</p><p class="rank">Rank: <span class="{{ current_user.roledata.color }}">[{{ current_user.roledata.role_name }}]</span></p></div>
+  </div>
+  <div class="message">
+    <form action="#" method="post" class="login">
+      {{ comment_form.csrf_token }}
+      <dl class="formField clearfix">
+        <dd class="thread comment">{{ comment_form.content(maxlength=3000, rows=4, placeholder="Contents of reply go here.", spellcheck="true") }}</dd>
+        <dd class="thread comment">{{ comment_form.submitReply() }}</dd>
+      </dl>
+    </form>
+  </div>
+  </div>
+  {% endif %}
+
+  
+  <div class="pages">
+    {% if replies.has_prev %}
+    <a href="{{ url_for('thread', id=post.uuid, page=replies.prev_num) }}">❮</a>
+    <a href="{{ url_for('thread', id=post.uuid, page=replies.prev_num) }}">{{ replies.prev_num }}</a>
+    {% endif %}
+    <a href="#" class="activePage">{{ request.args.get('page', 1) }}</a>
+    {% if replies.has_next %}
+    <a href="{{ url_for('thread', id=post.uuid, page=replies.next_num) }}">{{ replies.next_num }}</a>
+    <a href="{{ url_for('thread', id=post.uuid, page=replies.next_num) }}">❯</a>
+    {% endif %}
+    {% if replies.has_next.has_next %}
+    <a href="{{ url_for('thread', id=post.uuid, page=replies.next_num) }}">{{ replies.next_num.next_num }}</a>
+    <a href="{{ url_for('thread', id=post.uuid, page=replies.next_num) }}">❯</a>
+    {% endif %}
+  </div>
+
+  <ul class="bread">
+    <li><a href="{{ url_for('mserve') }}">Home</a></li>
+    <li><a href="{{ url_for('topic', murl=post.sub.m_url) }}">{{ post.sub.name }}</a></li>
+    <li><a href="{{ url_for('thread', id=post.uuid) }}" class="bold">Discourse</a></li>
+  </ul>
+</div>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends 'base.html' %}  
+
+{% set active_page = 'home' %}
+{% block title %}Notifications - Stachums{% endblock %}
+{% block main %}
+
+<div class="title"><h1>Notifications</h1></div>
+
+  <div class="group">
+    <div class="node">
+      <h4 class="nodeTitle">Notifications</h4>
+    </div>
+    {% for ele in notifications %}
+    <div class="subunit clearfix"><a href="{{ ele.end_url }}"><h4>{{ ele.name }}</h4></a> <a class="recent" href="{{ ele.end_url }}"><time class="time">{{ ele.time.strftime('%Y-%m-%d @ %H:%M') }}</time></a></div>
+    {% endfor %}
+  </div>
+
+  <div class="pages">
+    {% if notifications.has_prev %}
+    <a href="{{ url_for('notifications', page=notifications.prev_num) }}">❮</a>
+    <a href="{{ url_for('notifications', page=notifications.prev_num) }}">{{ notifications.prev_num }}</a>
+    {% endif %}
+    <a href="#" class="activePage">{{ request.args.get('page', 1) }}</a>
+    {% if notifications.has_next %}
+    <a href="{{ url_for('notifications', page=notifications.next_num) }}">{{ notifications.next_num }}</a>
+    <a href="{{ url_for('notifications', page=notifications.next_num) }}">❯</a>
+    {% endif %}
+    {% if notifications.has_next.has_next %}
+    <a href="{{ url_for('notifications', page=notifications.next_num) }}">{{ notifications.next_num.next_num }}</a>
+    <a href="{{ url_for('notifications', page=notifications.next_num) }}">❯</a>
+    {% endif %}
+  </div>
+
+{% endblock main %}

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}  
+{% set active_page = 'home' %}
+
+{% block main %}
+  
+  <ul class="bread">
+    <li><a href="#">Home</a></li>
+    <li><a href="#" class="bold">Forums</a></li>
+  </ul>
+
+  <div class="title"><h1>Thread Creation</h1></div>
+
+  <div class="group">
+    <div class="node">
+      <h4 class="nodeTitle">Ipconfig</h4>
+    </div>
+    <thread>
+      {% for a, b in items %}
+      <tr>
+        <td>{{ a }}</td>
+        <td>{{ b['count'] }}</td>
+        <td>{{ b.get('permanent', '') }}</td>
+        <td>{{ b['timestamp'] }}</td>
+      </tr>
+      {% endfor %}
+    </thread>
+  </div>
+
+  <ul class="bread">
+    <li><a href="#">Home</a></li>
+    <li><a href="#" class="bold">Forums</a></li>
+  </ul>
+</div>
+
+{% endblock %}

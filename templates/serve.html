@@ -1,0 +1,68 @@
+{% extends 'base.html' %}  
+{% set active_page = 'forum' %}
+{% block title %}Topics - Stachums{% endblock %}
+
+{% block main %}
+    
+  <ul class="bread">
+    <li><a href="#">Home</a></li>
+    <li><a href="#" class="bold">Forums</a></li>
+  </ul>
+
+<div class="clearfix">
+<div class="left_col">
+  <div class="title"><h1>Serving page</h1></div>
+
+  {% for topic in topics %}
+
+  <div class="group">
+    <div class="node">
+      <h4 class="nodeTitle">{{ topic.name }}</h4>
+    </div>
+    {% if topic.subtopics|length > 0 %}
+    {% for sub in topic.subtopics %}
+    <div class="subunit clearfix">
+      <a href="{{url_for('topic', murl=sub.m_url )}}"><h4>{{ sub.name }}</h4></a>
+      {% if sub.posts|length > 0 %}
+        <a class="recent" href="{{url_for('topic', murl=sub.m_url )}}">Newest Post-<time class="time">{{ sub.posts[-1].created_on.strftime('%Y-%m-%d @ %H:%M') }}</time></a>
+      {% endif %}
+      </div>
+    {% endfor %}
+    {% else %}
+    <div class="subunit clearfix"><a href="javascript:void(0)"><h4>No subtopics exist yet.</h4></a> <a class="recent" href="javascript:void(0)">Newest Post-<time class="time">NaN @ NaN</time></a></div>
+    {% endif %}
+  </div>
+  
+  {% endfor %}
+</div>
+<div class="right_col">
+  <div class="dell"></div>
+  <div class="statcard">
+  <div class="sep">
+  <h3>Users Online ({{ currently_online()|length }}):</h3>
+  {% set comma = joiner(", ") %}
+  <p>{% for user in currently_online() %}{{ comma() }}<a class='nostyle' href="{{ url_for('profile', username=user.username) }}">{{ user.username }}</a>{% endfor %}</p>
+  </div>
+  <div class="sep">
+  <h3>Newest Threads:</h3>
+    {% set comma2 = joiner(", ") %}
+  <p>{% for thread in getNewThreads() %}{{ comma2() }}<a class='nostyle' href="{{ url_for('thread', id=thread.uuid) }}">{{ thread.title|safe }}</a>{% endfor %}</p>
+  </div>
+  <div class="sep">
+  <h3>Forum Statistics:</h3>
+  <p>Users: [NUM_USERS]</p>
+  <p>Threads: [NUM_THREADS]</p>
+  <p>Version: 0.13</p>
+  <p></p>
+  </div>
+  </div>
+</div>
+</div>
+
+  <ul class="bread">
+    <li><a href="#">Home</a></li>
+    <li><a href="#" class="bold">Forums</a></li>
+  </ul>
+</div>
+
+{% endblock %}

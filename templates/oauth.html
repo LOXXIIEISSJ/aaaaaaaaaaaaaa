@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#222"/>
+  <meta name="description" content="Name Forums">
+  <meta name="viewport" content="width=device-width">
+  <title>STACHUMS OAUTH</title>
+  <link href="{{ url_for('static', filename='oauth.css') }}" rel="preconnect stylesheet" type="text/css" />
+  <link href="{{ url_for('static', filename='style.css') }}" rel="preconnect stylesheet" type="text/css" />
+  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+
+
+<div class="content pagesize">
+<div class="section">
+  <div class="group"><div class="node">Authorize App?</div>
+
+  <div class="card">
+    <img src="{{ url_for('static', filename='imgs/user/'+current_user.profile_pic) }}" alt="Something went wrong." class='opic'>
+  <p class='uwar'>{{ current_user.username }}</p>
+  <p>Do you wish to authorize <code>{{ bf }}</code> to access the data below?</p>
+  <p>OAUTH Settings:</p>
+  <p><code>{{ oauth_settings }}</code></p>
+  <form action="{{ bf }}" method="post">
+    {{ oform.csrf_token }}
+    <input type="hidden" value="{{ odata['username'] }}" name='username'>
+    <input type="hidden" value="{{ odata['profile_picture'] }}" name='prop'>
+    {{ oform.agree() }}
+  </form>
+  </div>
+  </div>
+</div>
+</div>
+
+<footer class="bottom">
+    <div class="pagesize">
+        <div class="socials">
+        <ul class="clearfix">
+            <a class="left" href="{{ settings['base']['source link'] }}">Repl</a>
+            {% if current_user.is_authenticated %}
+            <a class="left" href="{{ url_for('profile', username=current_user.username) }}">Profile</a>
+            {% else %}
+            <a href="{{ url_for('profile', username='ENIAC')}}" class="left">Profile</a>
+            {% endif %}
+            <a href="{{url_for('topic', murl='feedback')}}" class="right">Feedback</a>
+        </ul>
+        </div>
+
+        <div class="legal"><a href="{{ url_for('legal') }}">Legal stuff goes here</a> {% if current_user.is_authenticated %}<a href="{{ url_for('settings') }}">Logged in as: {{ current_user.username }}</a>{% endif %}</div>
+    </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}  
+
+{% set active_page = 'home' %}
+{% block title %}Legal - Stachums{% endblock %}
+{% block main %}
+
+<div class="title"><h2>Legal Information</h2></div>
+
+<div class="group" id='privacy'>
+    <div class="node">
+      <h3 class="nodeTitle">Privacy Policy for {{ settings['website']['name'] }}</h3>
+    </div>
+
+    <legal>
+      <p id='brief'>This privacy policy applies only to {{ settings['website']['name'] }} hosted on the <abbr title="Uniform Resource Locator">URL</abbr> <a href="{{ url_for('index', _external=True) }}">{{ url_for('index', _external=True) }}</a>. 'THIS WEBSITE' will refer to the website hosted on the <abbr title="Uniform Resource Locator">URL</abbr> <a href="{{ url_for('index', _external=True) }}">{{ url_for('index', _external=True) }}</a> on the day this privacy policy was either updated or introduced. This privacy policy will detail information that is collected from users of this website and how it is used. </p>
+      <p>This privacy policy only applies to information collected through use of this website/service and does not include information collected offline or without the use of this website/service.</p>
+
+      <div class="legal_node" id='consent'>
+        <h4 class="nodeTitle">Consent</h4>
+      </div>
+      <p>By using this website, you agree to all of the terms in the privacy policy and consent to its usage.</p>
+
+      <div class="legal_node" id='infocollected'>
+        <h4 class="nodeTitle">Information we collect</h4>
+      </div>
+      <p>The information we collect is limited to information provided by the user. Some common forms of information collected with the usage of this service are emails, usernames and passwords. Additional information (not limited to but including names, and approximate locations) may be obtained if you contact us through emails and various other forms of communication both digital and not.</p>
+
+      <div class="legal_node" id='infousage'>
+        <h4 class="nodeTitle">How we use this information</h4>
+      </div>
+      <p>The information collected is used within the scope of this website to present user profiles, send emails, help maintain and operate this website, and to aid in the creation or modification of new or existing services. Information collected through contact may be used to help resolve issues or in any other form of aid in responding to communication queries.</p>
+
+      <div class="legal_node" id='cookies'>
+        <h4 class="nodeTitle">Cookies</h4>
+      </div>
+      <p>Cookies are used on this website to help personalize and improve the user experience. The only cookie currently in use is a session cookie which aims to help cease the need for a user to login into their respective profiles each time they access a new route on this website.</p>
+    </legal>
+  
+  </div>
+</div>
+
+{% endblock main %}

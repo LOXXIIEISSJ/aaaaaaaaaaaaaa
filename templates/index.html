@@ -1,0 +1,30 @@
+{% extends 'base.html' %}  
+{% block title %}Stachums - Forum{% endblock %}
+{% set active_page = 'home' %}
+{% block main %}
+<head><meta name="google-site-verification" content="riFUrvkRVQdbWEbxcF69FLm2k4O_Gh9v_aFttrNFnm8"/></head> <!-- remove if forking: this is for the website to show up on google search -->
+<div class="title"><h2>{{ settings['website']['name'] }} Home Page</h2></div>
+
+<div class="group">
+    <img class='tophat' src="{{ url_for('static', filename='imgs/tophat.svg') }}" alt="top hat" aria-hidden='true'>
+    <p>Welcome to {{ settings['website']['name'] }}{% if current_user.is_authenticated %}, {{ current_user.username }}{% 
+endif %}!</p>
+    {% if current_user.is_authenticated %}<p>To get started visit our <a href="{{url_for('mserve')}}">forums</a> page or <a href="{{url_for('topic', murl='general')}}">general</a> chat.</p>
+    {% else %}<p>To get started visit our <a href="{{url_for('mserve')}}">forums</a> page or <a href="{{url_for('login')}}">create an account</a>.</p>{% endif %}
+    <div class="node">
+      <h4 class="nodeTitle">Quick Dial</h4>
+    </div>
+  
+    <div class="subunit clearfix">
+      <a href="{{url_for('mserve')}}"><h4>Forums</h4></a>
+    </div>
+    <div class="subunit clearfix">
+      <a href="{{url_for('login')}}"><h4>Login/Register</h4></a>
+    </div>
+    <div class="subunit clearfix">
+      <a href="{{url_for('topic', murl='updates')}}"><h4>Updates</h4></a>
+    </div>
+
+</div>
+
+{% endblock main %}
